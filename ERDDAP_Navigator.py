@@ -17,6 +17,7 @@ top.geometry('750x400')
 
 def esegui():
     
+    
     e = ERDDAP(
         server= "https://data.obsea.es/erddap",
         protocol="tabledap",
@@ -46,12 +47,14 @@ def esegui():
     # print the dataframe to check what data is in there specifically. 
     print(df_MySite.head())
     
-    
+    print("Number of rows: "+str(len(df_MySite.index)))
     # print the column names
     print (df_MySite.columns)
     # make data
-    df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
-    plt.show()
+    
+    #execute the plot (to decomment)
+    #df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
+    #plt.show()
     '''
     df_MySite['time (UTC)']
     
