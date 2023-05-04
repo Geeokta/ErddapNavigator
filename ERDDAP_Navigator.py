@@ -108,11 +108,13 @@ def check3():
         
         # print the dataframe to check what data is in there specifically. 
         print(df_MySite.head())
-        Info.insert(END, '\n', df_MySite.head())
+        Info.insert(END, '\n'+str(df_MySite.head()))
         print("Number of rows: "+str(len(df_MySite.index)))
+        myrows=len(df_MySite.index)
+        print("Number of rows pt2: "+str(myrows))
         # print the column names
         print (df_MySite.columns)
-        Info.insert(END, '\n', str(len(df_MySite.index)))
+        Info.insert(END, '\nNumber of rows: '+str(myrows))
     # make data
     except Exception as e:
         #print("WARNING!", e, "occurred.")
@@ -150,7 +152,7 @@ def check():
         DTSid_list = "\n".join(DTSid)
         print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
         
-        
+        #drop.delete(0, END)
         clicked.set('')
         drop['menu'].delete(0, 'end')
         new_choices=[]
@@ -211,6 +213,7 @@ def check2():
             #print(info_url)
             info = pd.read_csv(info_url)
             info.head()
+            dropVars['menu'].delete(0, 'end')
             #print(info.head)
             #variables="".join(info.loc[info["Row Type"] == "variable", "Value"])
             rslt_df = info[info['Row Type'] == "variable"]
@@ -218,6 +221,7 @@ def check2():
             for choiceVars in rslt_df['Variable Name']:
                 print(choiceVars)
                 dropVars['menu'].add_command(label=choiceVars, command=tk._setit(clickedVars, choiceVars))
+            clickedVars.set('')
         except Exception as e:
             #○print("WARNING!", e, "occurred.")
             outputExc=str(e.reason)
