@@ -13,7 +13,7 @@ from tkcalendar import Calendar, DateEntry
 import tkinter as tk
 from ttkthemes import ThemedTk
 from tkinter import messagebox
-
+import ssl
 #top = tkinter.Tk()
 top = ThemedTk(theme="radiance")
 top.title('ERDDASP Navigator')
@@ -26,6 +26,8 @@ top.geometry('750x400')
 #server = "https://data.obsea.es/erddap"
 #server = "https://gliders.ioos.us/erddap"
 
+#to use unverified ssl we need to add this row
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def plotData():
     
@@ -70,7 +72,9 @@ def plotData():
         plt.show()
     except Exception as e:
         #○print("WARNING!", e, "occurred.")
-        Info.insert(END, '\nWARNING! ', e, ' ocurred.')
+        outputExc=str(e.reason)
+        Info.insert(END, '\nWARNING! Exception ocurred:')
+        Info.insert(END, '\n',outputExc)
 
 
 def check3():
@@ -112,7 +116,9 @@ def check3():
     # make data
     except Exception as e:
         #print("WARNING!", e, "occurred.")
-        Info.insert(END, '\nWARNING! ', e, ' ocurred.')
+        outputExc=str(e.reason)
+        Info.insert(END, '\nWARNING! Exception ocurred:')
+        Info.insert(END, '\n',outputExc)
     #execute the plot (to decomment)
     #NOTE: add a option menu for the plot type choice
     #df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
@@ -176,8 +182,10 @@ def check():
             drop['menu'].add_command(label=choice, command=lambda value=choice: clicked.set(choice))
         '''
     except Exception as e:
-        #○print("WARNING!", e, "occurred.")
-        Info.insert(END, '\nWARNING! ', e, ' ocurred.')
+        #print("WARNING!", e, "occurred.")
+        outputExc=str(e.reason)
+        Info.insert(END, '\nWARNING! Exception ocurred:')
+        Info.insert(END, '\n',outputExc)
                         
 def changeURL(text):
     tmpURL=str(text)
@@ -212,7 +220,9 @@ def check2():
                 dropVars['menu'].add_command(label=choiceVars, command=tk._setit(clickedVars, choiceVars))
         except Exception as e:
             #○print("WARNING!", e, "occurred.")
-            Info.insert(END, '\nWARNING! ', e, ' ocurred.')
+            outputExc=str(e.reason)
+            Info.insert(END, '\nWARNING! Exception ocurred:')
+            Info.insert(END, '\n',outputExc)
     #clicked = StringVar()
 
 
