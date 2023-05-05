@@ -234,9 +234,9 @@ def check2():
 
 # initial menu text
 
-serverURLLabel=tkinter.Label(top, text='ServerURL')
+serverURLLabel=tkinter.Label(top, text='ServerURL (write it or use the menu)')
 serverURLLabel.grid(row=0, column=0, sticky=W)
-serverURL = Entry(top,)
+serverURL = Entry(top,width=25)
 serverURL.grid(row=0, column=1, sticky=W)
 
 URLoptions = [
@@ -247,16 +247,17 @@ URLoptions = [
 URLclicked = StringVar()
 # Create Dropdown menu
 URLdrop = OptionMenu( top , URLclicked , *URLoptions, command=changeURL)
+URLdrop.config(width=25)
 #drop.pack(padx=10, pady=10)
 URLdrop.grid(row=0, column=2, sticky=W)
 
 
 
 
-CheckAButton = Button(top, text="Check DATASETS",bg = "moccasin", command=(check))
+CheckAButton = Button(top, text="Check DATASETS",bg = "moccasin",width=25, command=(check))
 CheckAButton.grid(row=1, column=0, sticky=W)
 
-CheckBButton = Button(top, text="Check dataset's PARAMS",bg = "moccasin", command=(check2))
+CheckBButton = Button(top, text="Check dataset's PARAMS",bg = "moccasin",width=25, command=(check2))
 CheckBButton.grid(row=1, column=1, sticky=W)
 
 CheckCButton = Button(top, text="Check DATA",bg = "moccasin", command=(check3))
@@ -277,6 +278,7 @@ options = [
 clicked = StringVar()
 # Create Dropdown menu
 drop = OptionMenu( top , clicked , *options )
+drop.config(width=25)
 #drop.pack(padx=10, pady=10)
 drop.grid(row=2, column=0, sticky=W)
 
@@ -289,13 +291,14 @@ optionsVars = [
 clickedVars = StringVar()
 # Create Dropdown menu
 dropVars = OptionMenu( top , clickedVars , *optionsVars )
+dropVars.config(width=25)
 #dropVars.pack(padx=10, pady=10)
 dropVars.grid(row=2, column=1, sticky=W)
 
 
 StartLabel=tkinter.Label(top, text='Start date')
 StartLabel.grid(row=3, column=0, sticky=W)
-calStart = DateEntry(top, width=12, background="black", disabledbackground="black", bordercolor="blue", 
+calStart = DateEntry(top, width=25, background="black", disabledbackground="black", bordercolor="blue", 
                headersbackground="black", normalbackground="black", 
                normalforeground='white', headersforeground='white',
             foreground='white', borderwidth=2)
@@ -303,7 +306,7 @@ calStart.grid(row=4, column=0, sticky=W)
 
 EndLabel=tkinter.Label(top, text='End date')
 EndLabel.grid(row=3, column=1, sticky=W)
-calEnd = DateEntry(top, width=12, background="black", disabledbackground="black", bordercolor="blue", 
+calEnd = DateEntry(top, width=25, background="black", disabledbackground="black", bordercolor="blue", 
                headersbackground="black", normalbackground="black", 
                normalforeground='white', headersforeground='white',
             foreground='white', borderwidth=2)
