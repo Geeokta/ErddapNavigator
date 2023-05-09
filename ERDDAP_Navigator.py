@@ -150,39 +150,52 @@ def check():
         DTSid = search["Dataset ID"].values
         
         DTSid_list = "\n".join(DTSid)
-        print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
         
-        #drop.delete(0, END)
-        clicked.set('')
-        drop['menu'].delete(0, 'end')
-        new_choices=[]
-        for myid in DTSid:
-            
-            # Reset var and delete all old options
-            
+        msg_box = ''
+        if len(DTSid)>50 :
+            msg_box = messagebox.askquestion('WARNING', 'Found '+str(len(DTSid))+' datasets: Are you sure you want to continue? Too many datasets can hold the software',
+                                        icon='warning')
         
-            # Insert list of new options (tk._setit hooks them up to var)
-            new_choices.append(myid)
-            
-            
-            #info_url = e.get_info_url(dataset_id=myid, response="csv")
-            #print(info_url)
-            #info = pd.read_csv(info_url)
-            #info.head()
-            #print(info.head)
-        #clicked = StringVar()
-            
         
-        for choice in new_choices:
-            drop['menu'].add_command(label=choice, command=tk._setit(clicked, choice))
-    
-        #options.set(new_choices[0]) # default value set
-        '''
-        for choice in new_choices:
+        if msg_box == 'yes' or len(DTSid)<=50:
+        
+            print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
             
-            #drop['menu'].add_command(label=choice, command=(clicked,*choice))
-            drop['menu'].add_command(label=choice, command=lambda value=choice: clicked.set(choice))
-        '''
+            #drop.delete(0, END)
+            clicked.set('')
+            drop['menu'].delete(0, 'end')
+            new_choices=[]
+            for myid in DTSid:
+                
+                # Reset var and delete all old options
+                
+            
+                # Insert list of new options (tk._setit hooks them up to var)
+                new_choices.append(myid)
+                
+                
+                #info_url = e.get_info_url(dataset_id=myid, response="csv")
+                #print(info_url)
+                #info = pd.read_csv(info_url)
+                #info.head()
+                #print(info.head)
+            #clicked = StringVar()
+                
+            
+            for choice in new_choices:
+                drop['menu'].add_command(label=choice, command=tk._setit(clicked, choice))
+        
+            #options.set(new_choices[0]) # default value set
+            '''
+            for choice in new_choices:
+                
+                #drop['menu'].add_command(label=choice, command=(clicked,*choice))
+                drop['menu'].add_command(label=choice, command=lambda value=choice: clicked.set(choice))
+            '''
+        else:
+            messagebox.showwarning("Message", "Ok, the operation has been stopped")
+            
+            
     except Exception as e:
         #print("WARNING!", e, "occurred.")
         outputExc=str(e.reason)
@@ -241,7 +254,16 @@ serverURL.grid(row=0, column=1, sticky=W)
 
 URLoptions = [
     "https://data.obsea.es/erddap",
-    "https://gliders.ioos.us/erddap"
+    "https://gliders.ioos.us/erddap",
+    "https://erddap.emso.eu/erddap",
+    "https://polarwatch.noaa.gov/erddap",
+    "https://erddap.emodnet-physics.eu/erddap",
+    "http://oceano.bo.ingv.it/erddap",
+    "https://salishsea.eos.ubc.ca/erddap",
+    "https://coastwatch.noaa.gov/erddap",
+    "https://nodc.ogs.it/erddap",
+    "https://data.iadc.cnr.it/erddap",
+    "https://opendap.co-ops.nos.noaa.gov/erddap"
 ]
 # datatype of menu text
 URLclicked = StringVar()
