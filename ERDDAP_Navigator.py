@@ -4,6 +4,7 @@ https://ioos.github.io/erddapy/01b-tabledap-output.html
 '''
 import tkinter
 from tkinter import Tk, Label, Button, StringVar,OptionMenu,W,Entry,END,E,Text
+from tkinter import scrolledtext
 #Import erddap package into 
 from erddapy import ERDDAP
 import numpy as np
@@ -13,7 +14,9 @@ from tkcalendar import Calendar, DateEntry
 import tkinter as tk
 from ttkthemes import ThemedTk
 from tkinter import messagebox
+import time
 import ssl
+from tkinter.filedialog import asksaveasfile
 #top = tkinter.Tk()
 top = ThemedTk(theme="radiance")
 top.title('ERDDASP Navigator')
@@ -40,9 +43,10 @@ def plotData():
     
     e.dataset_id = str(clicked.get())
     myVar=str(clickedVars.get())
+    mySecondaryVar=str(clickedSecondaryVars.get())
     e.variables = [
-        "time",
-        ""+myVar
+        ""+myVar,
+        ""+mySecondaryVar
     ]
     e.constraints = {
         "time>=": str(calStart.get_date())+"T00:00:00Z",
@@ -77,6 +81,45 @@ def plotData():
         Info.insert(END, '\n',outputExc)
 
 
+
+def xlsexport():
+    e = ERDDAP(
+        server= str(serverURL.get()),
+        protocol="tabledap",
+        response="csv",
+    )
+    
+    e.dataset_id = str(clicked.get())
+    myVar=str(clickedVars.get())
+    mySecondaryVar=str(clickedSecondaryVars.get())
+    e.variables = [
+        ""+myVar,
+        ""+mySecondaryVar
+    ]
+    e.constraints = {
+        "time>=": str(calStart.get_date())+"T00:00:00Z",
+        "time<=": str(calEnd.get_date())+"T23:59:59Z",}
+    
+    try:
+        # Print the URL - check
+        url = e.get_download_url()
+        #print(url)
+        
+        # Convert URL to pandas dataframe
+        df_MySite = e.to_pandas(  
+            parse_dates=True,
+        ).dropna()
+        
+        files = [('Excel Document', '*.xlsx')] 
+        file = asksaveasfile(filetypes = files, defaultextension = files)
+            
+        df_MySite.to_excel(file.name,sheet_name='Sheet_name_1')
+        
+    except:
+        print("An exception occurred")
+        
+        
+        
 def check3():
     
     
@@ -88,9 +131,10 @@ def check3():
     
     e.dataset_id = str(clicked.get())
     myVar=str(clickedVars.get())
+    mySecondaryVar=str(clickedSecondaryVars.get())
     e.variables = [
-        "time",
-        ""+myVar
+        ""+myVar,
+        ""+mySecondaryVar
     ]
     e.constraints = {
         "time>=": str(calStart.get_date())+"T00:00:00Z",
@@ -227,6 +271,7 @@ def check2():
             info = pd.read_csv(info_url)
             info.head()
             dropVars['menu'].delete(0, 'end')
+            dropSecondaryVars['menu'].delete(0, 'end')
             #print(info.head)
             #variables="".join(info.loc[info["Row Type"] == "variable", "Value"])
             rslt_df = info[info['Row Type'] == "variable"]
@@ -234,7 +279,10 @@ def check2():
             for choiceVars in rslt_df['Variable Name']:
                 print(choiceVars)
                 dropVars['menu'].add_command(label=choiceVars, command=tk._setit(clickedVars, choiceVars))
+                dropSecondaryVars['menu'].add_command(label=choiceVars, command=tk._setit(clickedSecondaryVars, choiceVars))
+                
             clickedVars.set('')
+            clickedSecondaryVars.set('')
         except Exception as e:
             #○print("WARNING!", e, "occurred.")
             outputExc=str(e.reason)
@@ -286,8 +334,11 @@ CheckCButton = Button(top, text="Check DATA",bg = "moccasin", command=(check3))
 CheckCButton.grid(row=1, column=2, sticky=W)
 
 CheckDButton = Button(top, text="Plot DATA",bg = "moccasin", command=(plotData))
-CheckDButton.grid(row=1, column=3, sticky=E)
+CheckDButton.grid(row=1, column=3, sticky=W)
 
+
+CheckEButton = Button(top, text="DATA to XLSX",bg = "moccasin", command=(xlsexport))
+CheckEButton.grid(row=2, column=3, sticky=W)
 #tkinter.Button(top, text ="check", command = check).pack(padx=10, pady=10)
 #tkinter.Button(top, text ="check2", command = check2).pack(padx=10, pady=10)
 #tkinter.Button(top, text ="MyTest", command = check3).pack(padx=10, pady=10)
@@ -318,6 +369,19 @@ dropVars.config(width=25)
 dropVars.grid(row=2, column=1, sticky=W)
 
 
+
+# Dropdown menu options
+optionsSecondaryVars = [
+    ""
+]
+# datatype of menu text
+clickedSecondaryVars = StringVar()
+# Create Dropdown menu
+dropSecondaryVars = OptionMenu( top , clickedSecondaryVars , *optionsSecondaryVars )
+dropSecondaryVars.config(width=25)
+#dropVars.pack(padx=10, pady=10)
+dropSecondaryVars.grid(row=2, column=2, sticky=W)
+
 StartLabel=tkinter.Label(top, text='Start date')
 StartLabel.grid(row=3, column=0, sticky=W)
 calStart = DateEntry(top, width=25, background="black", disabledbackground="black", bordercolor="blue", 
@@ -334,7 +398,9 @@ calEnd = DateEntry(top, width=25, background="black", disabledbackground="black"
             foreground='white', borderwidth=2)
 calEnd.grid(row=4, column=1, sticky=W)
 
-Info = Text(top, height=45, width=100)
+
+#Info = Text(top, height=45, width=100)
+Info = scrolledtext.ScrolledText(top, height=20, width=100)
 Info.grid(row=5, column=0, columnspan=4, sticky=W)
 
 top.mainloop()
