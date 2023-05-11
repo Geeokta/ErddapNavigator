@@ -19,7 +19,7 @@ import ssl
 from tkinter.filedialog import asksaveasfile
 #top = tkinter.Tk()
 top = ThemedTk(theme="radiance")
-top.title('ERDDASP Navigator')
+top.title('ERDDAP Navigator')
 top.option_add('*Font', 'Verdana 8')
 top.geometry('750x400')
 
@@ -34,217 +34,236 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 def plotData():
     
-    
-    e = ERDDAP(
-        server= str(serverURL.get()),
-        protocol="tabledap",
-        response="csv",
-    )
-    
-    e.dataset_id = str(clicked.get())
     myVar=str(clickedVars.get())
     mySecondaryVar=str(clickedSecondaryVars.get())
-    e.variables = [
-        ""+myVar,
-        ""+mySecondaryVar
-    ]
-    e.constraints = {
-        "time>=": str(calStart.get_date())+"T00:00:00Z",
-        "time<=": str(calEnd.get_date())+"T23:59:59Z",}
     
-    try:
-        # Print the URL - check
-        url = e.get_download_url()
-        #print(url)
+    if myVar!='' and mySecondaryVar!='':
+        e = ERDDAP(
+            server= str(serverURL.get()),
+            protocol="tabledap",
+            response="csv",
+        )
         
-        # Convert URL to pandas dataframe
-        df_MySite = e.to_pandas(  
-            parse_dates=True,
-        ).dropna()
+        e.dataset_id = str(clicked.get())
+        #myVar=str(clickedVars.get())
+        #mySecondaryVar=str(clickedSecondaryVars.get())
+        e.variables = [
+            ""+myVar,
+            ""+mySecondaryVar
+        ]
+        e.constraints = {
+            "time>=": str(calStart.get_date())+"T00:00:00Z",
+            "time<=": str(calEnd.get_date())+"T23:59:59Z",}
         
-        # print the dataframe to check what data is in there specifically. 
-        #print(df_MySite.head())
-        
-        #print("Number of rows: "+str(len(df_MySite.index)))
-        # print the column names
-        #print (df_MySite.columns)
-        # make data
-        
-        #execute the plot (to decomment)
-        #NOTE: add a option menu for the plot type choice
-        df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
-        plt.show()
-    except Exception as e:
-        #○print("WARNING!", e, "occurred.")
-        outputExc=str(e.reason)
-        Info.insert(END, '\nWARNING! Exception ocurred:')
-        Info.insert(END, '\n',outputExc)
+        try:
+            # Print the URL - check
+            url = e.get_download_url()
+            #print(url)
+            
+            # Convert URL to pandas dataframe
+            df_MySite = e.to_pandas(  
+                parse_dates=True,
+            ).dropna()
+            
+            # print the dataframe to check what data is in there specifically. 
+            #print(df_MySite.head())
+            
+            #print("Number of rows: "+str(len(df_MySite.index)))
+            # print the column names
+            #print (df_MySite.columns)
+            # make data
+            
+            #execute the plot (to decomment)
+            #NOTE: add a option menu for the plot type choice
+            df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
+            plt.show()
+        except Exception as e:
+            #○print("WARNING!", e, "occurred.")
+            outputExc=str(e.reason)
+            Info.insert(END, '\nWARNING! Exception ocurred:')
+            Info.insert(END, '\n',outputExc)
+    else:
+        messagebox.showwarning("Message", "Please, select two params to plot (Y/X axis)")
 
 
 
 def xlsexport():
-    e = ERDDAP(
-        server= str(serverURL.get()),
-        protocol="tabledap",
-        response="csv",
-    )
     
-    e.dataset_id = str(clicked.get())
     myVar=str(clickedVars.get())
     mySecondaryVar=str(clickedSecondaryVars.get())
-    e.variables = [
-        ""+myVar,
-        ""+mySecondaryVar
-    ]
-    e.constraints = {
-        "time>=": str(calStart.get_date())+"T00:00:00Z",
-        "time<=": str(calEnd.get_date())+"T23:59:59Z",}
     
-    try:
-        # Print the URL - check
-        url = e.get_download_url()
-        #print(url)
+    if myVar!='' and mySecondaryVar!='':
+        e = ERDDAP(
+            server= str(serverURL.get()),
+            protocol="tabledap",
+            response="csv",
+        )
         
-        # Convert URL to pandas dataframe
-        df_MySite = e.to_pandas(  
-            parse_dates=True,
-        ).dropna()
+        e.dataset_id = str(clicked.get())
+        myVar=str(clickedVars.get())
+        mySecondaryVar=str(clickedSecondaryVars.get())
+        e.variables = [
+            ""+myVar,
+            ""+mySecondaryVar
+        ]
+        e.constraints = {
+            "time>=": str(calStart.get_date())+"T00:00:00Z",
+            "time<=": str(calEnd.get_date())+"T23:59:59Z",}
         
-        files = [('Excel Document', '*.xlsx')] 
-        file = asksaveasfile(filetypes = files, defaultextension = files)
+        try:
+            # Print the URL - check
+            url = e.get_download_url()
+            #print(url)
             
-        df_MySite.to_excel(file.name,sheet_name='Sheet_name_1')
-        
-    except:
-        print("An exception occurred")
-        
+            # Convert URL to pandas dataframe
+            df_MySite = e.to_pandas(  
+                parse_dates=True,
+            ).dropna()
+            
+            files = [('Excel Document', '*.xlsx')] 
+            file = asksaveasfile(filetypes = files, defaultextension = files)
+                
+            df_MySite.to_excel(file.name,sheet_name='Sheet_name_1')
+            
+        except:
+            print("An exception occurred")
+    else:
+        messagebox.showwarning("Message", "Please, select two params to export")
         
         
 def check3():
-    
-    
-    e = ERDDAP(
-        server= str(serverURL.get()),
-        protocol="tabledap",
-        response="csv",
-    )
-    
-    e.dataset_id = str(clicked.get())
     myVar=str(clickedVars.get())
     mySecondaryVar=str(clickedSecondaryVars.get())
-    e.variables = [
-        ""+myVar,
-        ""+mySecondaryVar
-    ]
-    e.constraints = {
-        "time>=": str(calStart.get_date())+"T00:00:00Z",
-        "time<=": str(calEnd.get_date())+"T23:59:59Z",}
     
-    try:
-        # Print the URL - check
-        url = e.get_download_url()
-        print(url)
+    if myVar!='' and mySecondaryVar!='':
+        e = ERDDAP(
+            server= str(serverURL.get()),
+            protocol="tabledap",
+            response="csv",
+        )
         
-        # Convert URL to pandas dataframe
-        df_MySite = e.to_pandas(  
-            parse_dates=True,
-        ).dropna()
+        e.dataset_id = str(clicked.get())
+        #myVar=str(clickedVars.get())
+        #mySecondaryVar=str(clickedSecondaryVars.get())
+        e.variables = [
+            ""+myVar,
+            ""+mySecondaryVar
+        ]
+        e.constraints = {
+            "time>=": str(calStart.get_date())+"T00:00:00Z",
+            "time<=": str(calEnd.get_date())+"T23:59:59Z",}
         
-        # print the dataframe to check what data is in there specifically. 
-        print(df_MySite.head())
-        Info.insert(END, '\n'+str(df_MySite.head()))
-        print("Number of rows: "+str(len(df_MySite.index)))
-        myrows=len(df_MySite.index)
-        print("Number of rows pt2: "+str(myrows))
-        # print the column names
-        print (df_MySite.columns)
-        Info.insert(END, '\nNumber of rows: '+str(myrows))
-    # make data
-    except Exception as e:
-        #print("WARNING!", e, "occurred.")
-        outputExc=str(e.reason)
-        Info.insert(END, '\nWARNING! Exception ocurred:')
-        Info.insert(END, '\n',outputExc)
-    #execute the plot (to decomment)
-    #NOTE: add a option menu for the plot type choice
-    #df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
-    #plt.show()
-    '''
-    df_MySite['time (UTC)']
-    
-    
-    df_MySite.plot (
-        x='time (UTC)',
-        y=myVar)
-    plt.tick_params(axis='x', labelrotation=45)
-    plt.show()
-    '''
+        try:
+            # Print the URL - check
+            url = e.get_download_url()
+            print(url)
+            
+            # Convert URL to pandas dataframe
+            df_MySite = e.to_pandas(  
+                parse_dates=True,
+            ).dropna()
+            
+            # print the dataframe to check what data is in there specifically. 
+            print(df_MySite.head())
+            Info.insert(END, '\n'+str(df_MySite.head()))
+            print("Number of rows: "+str(len(df_MySite.index)))
+            myrows=len(df_MySite.index)
+            print("Number of rows pt2: "+str(myrows))
+            # print the column names
+            print (df_MySite.columns)
+            Info.insert(END, '\nNumber of rows: '+str(myrows))
+        # make data
+        except Exception as e:
+            #print("WARNING!", e, "occurred.")
+            outputExc=str(e.reason)
+            Info.insert(END, '\nWARNING! Exception ocurred:')
+            Info.insert(END, '\n',outputExc)
+        #execute the plot (to decomment)
+        #NOTE: add a option menu for the plot type choice
+        #df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
+        #plt.show()
+        '''
+        df_MySite['time (UTC)']
+        
+        
+        df_MySite.plot (
+            x='time (UTC)',
+            y=myVar)
+        plt.tick_params(axis='x', labelrotation=45)
+        plt.show()
+        '''
+    else:
+        #messagebox.showwarning("Message", "Please, select two params to plot (Y/X axis)")
+        messagebox.showwarning("Message", "Please, select two params")
+
 
 def check():
-    
-    e = ERDDAP(server=str(serverURL.get()))
-    
-    kw = {
-        "min_time": "1900-01-01T00:00:00Z",
-        #"max_time": "2017-02-10T00:00:00Z",
-    }
-    try:
-        search_url = e.get_search_url(response="csv", **kw)
-        search = pd.read_csv(search_url)
-        DTSid = search["Dataset ID"].values
+    if serverURL.get()!='':
+        e = ERDDAP(server=str(serverURL.get()))
         
-        DTSid_list = "\n".join(DTSid)
-        
-        msg_box = ''
-        if len(DTSid)>50 :
-            msg_box = messagebox.askquestion('WARNING', 'Found '+str(len(DTSid))+' datasets: Are you sure you want to continue? Too many datasets can hold the software',
-                                        icon='warning')
-        
-        
-        if msg_box == 'yes' or len(DTSid)<=50:
-        
-            print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
+        kw = {
+            "min_time": "1900-01-01T00:00:00Z",
+            #"max_time": "2017-02-10T00:00:00Z",
+        }
+        try:
+            search_url = e.get_search_url(response="csv", **kw)
+            search = pd.read_csv(search_url)
+            DTSid = search["Dataset ID"].values
             
-            #drop.delete(0, END)
-            clicked.set('')
-            drop['menu'].delete(0, 'end')
-            new_choices=[]
-            for myid in DTSid:
-                
-                # Reset var and delete all old options
-                
+            DTSid_list = "\n".join(DTSid)
             
-                # Insert list of new options (tk._setit hooks them up to var)
-                new_choices.append(myid)
-                
-                
-                #info_url = e.get_info_url(dataset_id=myid, response="csv")
-                #print(info_url)
-                #info = pd.read_csv(info_url)
-                #info.head()
-                #print(info.head)
-            #clicked = StringVar()
-                
-            
-            for choice in new_choices:
-                drop['menu'].add_command(label=choice, command=tk._setit(clicked, choice))
-        
-            #options.set(new_choices[0]) # default value set
-            '''
-            for choice in new_choices:
-                
-                #drop['menu'].add_command(label=choice, command=(clicked,*choice))
-                drop['menu'].add_command(label=choice, command=lambda value=choice: clicked.set(choice))
-            '''
-        else:
-            messagebox.showwarning("Message", "Ok, the operation has been stopped")
+            msg_box = ''
+            if len(DTSid)>50 :
+                msg_box = messagebox.askquestion('WARNING', 'Found '+str(len(DTSid))+' datasets: Are you sure you want to continue? Too many datasets can crash the software',
+                                            icon='warning')
             
             
-    except Exception as e:
-        #print("WARNING!", e, "occurred.")
-        outputExc=str(e.reason)
-        Info.insert(END, '\nWARNING! Exception ocurred:')
-        Info.insert(END, '\n',outputExc)
+            if msg_box == 'yes' or len(DTSid)<=50:
+            
+                print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
+                
+                #drop.delete(0, END)
+                clicked.set('')
+                drop['menu'].delete(0, 'end')
+                new_choices=[]
+                for myid in DTSid:
+                    
+                    # Reset var and delete all old options
+                    
+                
+                    # Insert list of new options (tk._setit hooks them up to var)
+                    new_choices.append(myid)
+                    
+                    
+                    #info_url = e.get_info_url(dataset_id=myid, response="csv")
+                    #print(info_url)
+                    #info = pd.read_csv(info_url)
+                    #info.head()
+                    #print(info.head)
+                #clicked = StringVar()
+                    
+                
+                for choice in new_choices:
+                    drop['menu'].add_command(label=choice, command=tk._setit(clicked, choice))
+            
+                #options.set(new_choices[0]) # default value set
+                '''
+                for choice in new_choices:
+                    
+                    #drop['menu'].add_command(label=choice, command=(clicked,*choice))
+                    drop['menu'].add_command(label=choice, command=lambda value=choice: clicked.set(choice))
+                '''
+            else:
+                messagebox.showwarning("Message", "Ok, the operation has been stopped")
+                
+                
+        except Exception as e:
+            #print("WARNING!", e, "occurred.")
+            outputExc=str(e.reason)
+            Info.insert(END, '\nWARNING! Exception ocurred:')
+            Info.insert(END, '\n',outputExc)
+    else:
+        messagebox.showwarning("Message", "Please, select an URL")
                         
 def changeURL(text):
     tmpURL=str(text)
@@ -289,6 +308,8 @@ def check2():
             Info.insert(END, '\nWARNING! Exception ocurred:')
             Info.insert(END, '\n',outputExc)
     #clicked = StringVar()
+    else:
+        messagebox.showwarning("Message", "Please, select a dataset")
 
 
 
