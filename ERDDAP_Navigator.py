@@ -78,10 +78,8 @@ def plotData():
             df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
             plt.show()
         except Exception as e:
-            #○print("WARNING!", e, "occurred.")
-            outputExc=str(e.reason)
             Info.insert(END, '\nWARNING! Exception ocurred:')
-            Info.insert(END, '\n',outputExc)
+            messagebox.showerror(message='error: "{}"'.format(e))
     else:
         messagebox.showwarning("Message", "Please, select two params to plot (Y/X axis)")
 
@@ -174,10 +172,8 @@ def check3():
             Info.insert(END, '\nNumber of rows: '+str(myrows))
         # make data
         except Exception as e:
-            #print("WARNING!", e, "occurred.")
-            outputExc=str(e.reason)
             Info.insert(END, '\nWARNING! Exception ocurred:')
-            Info.insert(END, '\n',outputExc)
+            messagebox.showerror(message='error: "{}"'.format(e))
         #execute the plot (to decomment)
         #NOTE: add a option menu for the plot type choice
         #df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
@@ -258,10 +254,9 @@ def check():
                 
                 
         except Exception as e:
-            #print("WARNING!", e, "occurred.")
-            outputExc=str(e.reason)
             Info.insert(END, '\nWARNING! Exception ocurred:')
-            Info.insert(END, '\n',outputExc)
+            messagebox.showerror(message='error: "{}"'.format(e))
+            
     else:
         messagebox.showwarning("Message", "Please, select an URL")
                         
@@ -303,10 +298,8 @@ def check2():
             clickedVars.set('')
             clickedSecondaryVars.set('')
         except Exception as e:
-            #○print("WARNING!", e, "occurred.")
-            outputExc=str(e.reason)
             Info.insert(END, '\nWARNING! Exception ocurred:')
-            Info.insert(END, '\n',outputExc)
+            messagebox.showerror(message='error: "{}"'.format(e))
     #clicked = StringVar()
     else:
         messagebox.showwarning("Message", "Please, select a dataset")
@@ -326,6 +319,7 @@ URLoptions = [
     "https://gliders.ioos.us/erddap",
     "https://erddap.emso.eu/erddap",
     "https://polarwatch.noaa.gov/erddap",
+    "https://erddap.emodnet.eu/erddap",
     "https://erddap.emodnet-physics.eu/erddap",
     "http://oceano.bo.ingv.it/erddap",
     "https://salishsea.eos.ubc.ca/erddap",
