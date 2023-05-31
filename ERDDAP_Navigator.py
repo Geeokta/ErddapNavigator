@@ -1,5 +1,29 @@
 # -*- coding: utf-8 -*-
 '''
+----------------------------------
+This software is under MIT License 
+----------------------------------
+
+Permission is hereby granted, free of charge, \n to any person obtaining a copy 
+of this software and associated documentation \n files (the "Software"), to deal 
+in the Software without restriction, including \n without limitation the rights 
+to use, copy, modify, merge, publish, distribute, \n sublicense, and/or sell 
+copies of the Software, and to permit persons \n to whom the Software is 
+furnished to do so, subject to the following \n conditions: 
+
+The above copyright notice and this permission \n notice shall be included in all 
+copies or substantial portions of the Software. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY \n OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES \n OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. \n IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY \n CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT \n OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE \n USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+'''
+
+'''
 Fro more informations about erddapy 
 https://ioos.github.io/erddapy/01b-tabledap-output.html
 '''
@@ -23,8 +47,6 @@ top = ThemedTk(theme="radiance")
 top.title('ERDDAP Navigator')
 top.option_add('*Font', 'Verdana 8')
 top.geometry('750x400')
-
-
 #to use unverified ssl we need to add this row
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -58,7 +80,10 @@ def plotData():
                 parse_dates=True,
             ).dropna()
             
-            df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind='scatter')
+            MyThemeTMP=MyTheme.get()
+            plt.style.use(MyThemeTMP)
+            MyLineTMP=MyLine.get()
+            df_MySite.plot(x=df_MySite.columns[1], y=df_MySite.columns[0], kind=MyLineTMP)
             plt.show()
         except Exception as e:
             Info.insert(END, '\nWARNING! Exception ocurred:')
@@ -150,6 +175,11 @@ def check3():
 
 def check():
     if serverURL.get()!='':
+        clickedVars.set('')
+        dropVars['menu'].delete(0, 'end')
+        clickedSecondaryVars.set('')
+        dropSecondaryVars['menu'].delete(0, 'end')
+        
         e = ERDDAP(server=str(serverURL.get()))
         
         kw = {
@@ -166,7 +196,6 @@ def check():
                                             icon='warning')
 
             if msg_box == 'yes' or len(DTSid)<=50:
-                #print(f"Found {len(DTSid)} Datasets:\n{DTSid_list}")
                 clicked.set('')
                 drop['menu'].delete(0, 'end')
                 new_choices=[]
@@ -190,6 +219,9 @@ def changeURL(text):
     tmpURL=str(text)
     serverURL.delete(0,END)
     serverURL.insert(0,tmpURL)
+    drop['menu'].delete(0, 'end')
+    dropVars['menu'].delete(0, 'end')
+    dropSecondaryVars['menu'].delete(0, 'end')
 
 def check2():
     tmpDTS=str(clicked.get())
@@ -275,19 +307,19 @@ URLdrop = OptionMenu( top , URLclicked , *URLoptions, command=changeURL)
 URLdrop.config(width=25)
 URLdrop.grid(row=0, column=2, sticky=W)
 
-CheckAButton = Button(top, text="Check DATASETS",bg = "moccasin",width=25, command=(check))
+CheckAButton = Button(top, text="Check DATASETS",bg = "SkyBlue2",width=25, command=(check))
 CheckAButton.grid(row=1, column=0, sticky=W)
 
-CheckBButton = Button(top, text="Check dataset's PARAMS",bg = "moccasin",width=25, command=(check2))
+CheckBButton = Button(top, text="Check dataset's PARAMS",bg = "gold",width=25, command=(check2))
 CheckBButton.grid(row=1, column=1, sticky=W)
 
-CheckCButton = Button(top, text="Check DATA",bg = "moccasin", command=(check3))
+CheckCButton = Button(top, text="Check DATA",bg = "orchid1", command=(check3))
 CheckCButton.grid(row=1, column=2, sticky=W)
 
-CheckDButton = Button(top, text="Plot DATA",bg = "moccasin", command=(plotData))
+CheckDButton = Button(top, text="Plot DATA",bg = "orchid1", command=(plotData))
 CheckDButton.grid(row=1, column=3, sticky=W)
 
-CheckEButton = Button(top, text="DATA to XLSX",bg = "moccasin", command=(xlsexport))
+CheckEButton = Button(top, text="DATA to XLSX",bg = "orchid1", command=(xlsexport))
 CheckEButton.grid(row=2, column=3, sticky=W)
 
 # Dropdown menu options
@@ -300,6 +332,8 @@ drop = OptionMenu( top , clicked , *options )
 drop.config(width=25)
 drop.grid(row=2, column=0, sticky=W)
 
+XaxisLabel=tkinter.Label(top, text='X axis', fg="white", bg="black")
+XaxisLabel.grid(row=2, column=1, sticky=W)
 # Dropdown menu options
 optionsVars = [
     ""
@@ -307,9 +341,11 @@ optionsVars = [
 clickedVars = StringVar()
 # Create Dropdown menu
 dropVars = OptionMenu( top , clickedVars , *optionsVars )
-dropVars.config(width=25)
-dropVars.grid(row=2, column=1, sticky=W)
+dropVars.config(width=15)
+dropVars.grid(row=2, column=1, sticky=E)
 
+YaxisLabel=tkinter.Label(top, text='Y axis', fg="white", bg="black")
+YaxisLabel.grid(row=2, column=2, sticky=W)
 # Dropdown menu options
 optionsSecondaryVars = [
     ""
@@ -317,10 +353,10 @@ optionsSecondaryVars = [
 clickedSecondaryVars = StringVar()
 # Create Dropdown menu
 dropSecondaryVars = OptionMenu( top , clickedSecondaryVars , *optionsSecondaryVars )
-dropSecondaryVars.config(width=25)
-dropSecondaryVars.grid(row=2, column=2, sticky=W)
+dropSecondaryVars.config(width=17)
+dropSecondaryVars.grid(row=2, column=2, sticky=E)
 
-StartLabel=tkinter.Label(top, text='Start date')
+StartLabel=tkinter.Label(top, text='Start date', fg="white", bg="black")
 StartLabel.grid(row=3, column=0, sticky=W)
 calStart = DateEntry(top, width=25, background="black", disabledbackground="black", bordercolor="blue", 
                headersbackground="black", normalbackground="black", 
@@ -328,7 +364,7 @@ calStart = DateEntry(top, width=25, background="black", disabledbackground="blac
             foreground='white', borderwidth=2)
 calStart.grid(row=4, column=0, sticky=W)
 
-EndLabel=tkinter.Label(top, text='End date')
+EndLabel=tkinter.Label(top, text='End date', fg="white", bg="black")
 EndLabel.grid(row=3, column=1, sticky=W)
 calEnd = DateEntry(top, width=25, background="black", disabledbackground="black", bordercolor="blue", 
                headersbackground="black", normalbackground="black", 
@@ -336,7 +372,52 @@ calEnd = DateEntry(top, width=25, background="black", disabledbackground="black"
             foreground='white', borderwidth=2)
 calEnd.grid(row=4, column=1, sticky=W)
 
-Info = scrolledtext.ScrolledText(top, height=20, width=100)
-Info.grid(row=5, column=0, columnspan=4, sticky=W)
+buttonShowDarkest = Label(top, text ="Choose the plot theme", fg="white", bg="black")
+buttonShowDarkest.grid(row=5, column=0, sticky=W)
+
+buttonShowLine = Label(top, text ="Choose the plot Style", fg="white", bg="black")
+buttonShowLine.grid(row=5, column=1, sticky=W)
+
+# Dropdown menu options
+optionsTheme = [
+    "default",
+    "classic",
+    "dark_background",
+    "Solarize_Light2",
+    "fast",
+    "fivethirtyeight",
+    "bmh",
+    "ggplot",
+    "grayscale",
+]
+# datatype of menu text
+MyTheme = StringVar()
+# initial menu text
+MyTheme.set( "default" )
+# Create Dropdown menu
+dropTheme = OptionMenu(top,MyTheme,*optionsTheme )
+dropTheme.grid(row=6, column=0, sticky=W)
+
+optionsLine = [
+    "scatter",
+    "barh",
+    "hist",
+    "box",
+    "area",
+    "pie",
+]
+# datatype of menu text
+MyLine = StringVar()
+# initial menu text
+MyLine.set( "scatter" )
+# Create Dropdown menu
+dropLine = OptionMenu(top,MyLine,*optionsLine )
+dropLine.grid(row=6, column=1, sticky=W)
+
+Info = scrolledtext.ScrolledText(top, height=15, width=100)
+Info.grid(row=7, column=0, columnspan=4, sticky=W)
+Info.insert(END, '\n ------------------------------------ ')
+Info.insert(END, '\n Welcome to ERDDAP Navigator \n(pythonopenprojects@gmail.com)')
+Info.insert(END, '\n ------------------------------------ ')
 
 top.mainloop()
