@@ -34,6 +34,8 @@ from tkinter import scrolledtext
 from erddapy import ERDDAP
 import numpy as np
 import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+from matplotlib import style
 import pandas as pd
 from tkcalendar import Calendar, DateEntry
 import tkinter as tk
@@ -419,5 +421,63 @@ Info.grid(row=7, column=0, columnspan=4, sticky=W)
 Info.insert(END, '\n ------------------------------------ ')
 Info.insert(END, '\n Welcome to ERDDAP Navigator \n(pythonopenprojects@gmail.com)')
 Info.insert(END, '\n ------------------------------------ ')
+
+
+import matplotlib.cm as cm
+import matplotlib.font_manager
+from matplotlib.patches import Rectangle, PathPatch
+from matplotlib.text import TextPath
+import matplotlib.transforms as mtrans
+MPL_BLUE = '#11557c'
+
+def get_font_properties():
+    # The original font is Calibri, if that is not installed, we fall back
+    # to Carlito, which is metrically equivalent.
+    if 'Calibri' in matplotlib.font_manager.findfont('Calibri:bold'):
+        return matplotlib.font_manager.FontProperties(family='Calibri',
+                                                      weight='bold')
+    if 'Carlito' in matplotlib.font_manager.findfont('Carlito:bold'):
+        #print('Original font not found. Falling back to Carlito. '
+        #      'The logo text will not be in the correct font.')
+        return matplotlib.font_manager.FontProperties(family='Carlito',
+                                                      weight='bold')
+    #print('Original font not found. '
+    #      'The logo text will not be in the correct font.')
+    return None
+
+def create_text_axes(fig, height_px):
+    """Create an Axes in *fig* that contains 'matplotlib' as Text."""
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_aspect("equal")
+    ax.set_axis_off()
+
+    path = TextPath((0, 0), "ERDDAP Navigator", size=height_px * 0.8,
+                    prop=get_font_properties())
+
+    angle = 4.25  # degrees
+    trans = mtrans.Affine2D().skew_deg(angle, 0)
+
+    patch = PathPatch(path, transform=trans + ax.transData, color=MPL_BLUE,
+                      lw=0)
+    ax.add_patch(patch)
+    ax.autoscale()
+
+def splash_screen(height_px, lw_bars, lw_grid, lw_border, rgrid, with_text=False):
+    
+    dpi = 100
+    height = height_px / dpi
+    figsize = (5 * height, height) if with_text else (height, height)
+    fig = plt.figure(figsize=figsize, dpi=dpi)
+    fig.patch.set_alpha(0)
+
+    if with_text:
+        create_text_axes(fig, height_px)
+    ax_pos = (0.535, 0.12, .17, 0.75) if with_text else (0.03, 0.03, .94, .94)
+
+    return fig, ax_pos
+splash_screen(height_px=110, lw_bars=0.7, lw_grid=0.5, lw_border=1,
+          rgrid=[1, 3, 5, 7], with_text=True)
+plt.show()
+
 
 top.mainloop()
