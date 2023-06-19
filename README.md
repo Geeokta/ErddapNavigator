@@ -1,6 +1,11 @@
 # ErddapNavigator
 A software to navigate between data in a ERDDAP web services
 
+# EXE files:
+
+* (https://drive.google.com/file/d/1h2we1E4ocd4LYbX1VzkRc3Axu3yTjYCv/view?usp=sharing "Windows Version")
+
+* (https://drive.google.com/file/d/1FXxQSAqNCrr8YWuw-Vn2DYsTXbQKLFkk/view?usp=sharing "Linux Version")
 
 # How to use the ERDDAP-NAVIGATOR:
 
