@@ -299,6 +299,7 @@ URLoptions = [
     "https://erddap.emodnet-physics.eu/erddap",
     "http://oceano.bo.ingv.it/erddap",
     "https://coastwatch.noaa.gov/erddap",
+    "https://linkedsystems.uk/erddap/",
     "https://nodc.ogs.it/erddap",
     "https://data.iadc.cnr.it/erddap",
     "https://opendap.co-ops.nos.noaa.gov/erddap"
